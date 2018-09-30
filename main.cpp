@@ -11,7 +11,7 @@ void main(int argc, char **argv) {
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(320, 320);
-	glutCreateWindow("Hello OpenGL");
+	glutCreateWindow("Hello Muno");
 	glutDisplayFunc(renderScene);
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	glewInit();
