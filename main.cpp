@@ -2,6 +2,13 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include "player.h"
+
+// 문제...
+// 1. 정적인 물체는 모두 map으로 관리...? (item, wall) 포함
+// 2. enemy는 list로 관리??
+// 3. 스무스한 움직임을 구현?
+// 4. 몇초에 한번씩 enemy가 움직여야 하는지?
+
 using namespace std;
 Player player(10, 10);
 extern int map_wall[20][20];
