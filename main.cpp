@@ -10,7 +10,7 @@ void main(int argc, char **argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
-	glutInitWindowSize(320, 320);
+	glutInitWindowSize(1000, 1000);
 	glutCreateWindow("Hello OpenGL");
 	glutDisplayFunc(renderScene);
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
