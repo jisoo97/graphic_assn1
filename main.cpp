@@ -2,7 +2,9 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 using namespace std;
-extern int map[20][20];
+extern int map_wall[20][20];
+extern int map_enemy[20][20];
+extern int map_bullet[20][20];
 
 void reshape(int w, int h)
 {
@@ -22,8 +24,9 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT);
 	for (int i = 0; i < 20; i++)
 		for (int j = 0; j < 20; j++)
-			if (map[i][j] == 0)
+			if (map_wall[i][j] == 0)
 				drawWall(i, j);
+
 	glutSwapBuffers();
 }
 
