@@ -1,9 +1,10 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include "player.h"
 using namespace std;
 extern int map[20][20];
-
+Player player(10, 10);
 void reshape(int w, int h)
 {
 	glViewport(0, 0, w, h);
@@ -24,6 +25,7 @@ void display()
 		for (int j = 0; j < 20; j++)
 			if (map[i][j] == 0)
 				drawWall(i, j);
+	player.draw();
 	glutSwapBuffers();
 }
 
@@ -31,23 +33,30 @@ void special(int key, int x, int y)
 {
 	switch (key) {
 	case GLUT_KEY_UP:
+		player.move(player.x, player.y+1);
 		break;
 	case GLUT_KEY_DOWN:
+		player.move(player.x, player.y - 1);
 		break;
 	case GLUT_KEY_LEFT:
+		player.move(player.x-1, player.y);
 		break;
 	case GLUT_KEY_RIGHT:
+		player.move(player.x+1, player.y);
 		break;
 	}
+	glutPostRedisplay();
 }
+
 void main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+	glutInitWindowSize(500, 400);
 	glutCreateWindow("simple");
 	glutSpecialFunc(special);
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
-
+	
 	glutMainLoop();
 }
