@@ -24,4 +24,5 @@ int map_wall[20][20] =
 
 int map_enemy[20][20] ={0};
 
-int map_bullet[20][20] = { 0 };
+int map_bullet[20][20] = {0};
+int map_item[20][20] = {0};

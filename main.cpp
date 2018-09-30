@@ -3,7 +3,6 @@
 #include <GL/freeglut.h>
 #include "player.h"
 using namespace std;
-extern int map[20][20];
 Player player(10, 10);
 extern int map_wall[20][20];
 extern int map_enemy[20][20];
@@ -13,18 +12,20 @@ void reshape(int w, int h)
 {
 	glViewport(0, 0, w, h);
 	glLoadIdentity();
-	gluOrtho2D(0,500,0,400);
+	gluOrtho2D(player.x * 50 - 250,player.x * 50 + 250, player.y * 50 - 200, player.y * 50 + 200);
 }
 
 void drawWall(int i, int j)
 {
-	glColor3f(1,0,0);
+	glColor3f(191/255.0,144/255.0,0/255.0);
 	glRectf(i*50, j*50, (i+1)*50, (j+1)*50);
 }
 
 void display()
 {
+	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
+	
 	for (int i = 0; i < 20; i++)
 		for (int j = 0; j < 20; j++)
 			if (map_wall[i][j] == 1)
