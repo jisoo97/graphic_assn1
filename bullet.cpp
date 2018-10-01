@@ -1,4 +1,6 @@
 #include "Bullet.h"
+#include <GL/glut.h>
+#include <math.h>
 extern int map_wall[20][20];
 extern int map_bullet[20][20];
 Bullet::Bullet()

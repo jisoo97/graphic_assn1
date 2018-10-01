@@ -1,4 +1,5 @@
 #include "item.h"
+#include <GL/glut.h>
 
 Item::Item()
 {
