@@ -56,7 +56,7 @@ void Bullet::move() {
 	}
 }
 
-bool Bullet::isCollision() {
+bool Bullet::wallCollision() {
 	int x_fit = this->x / 50;
 	int y_fit = this->y / 50;
 	if (map_wall[x_fit][y_fit]) {//collision

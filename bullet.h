@@ -5,7 +5,7 @@ public:
 	Bullet();
 	void draw();
 	void move();
-	bool  isCollision();
+	bool  wallCollision();
 	~Bullet();
 	int x;
 	int y;
