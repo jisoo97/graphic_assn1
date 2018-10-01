@@ -4,6 +4,7 @@
 #include "player.h"
 #include "bullet.h"
 #include "enemy.h"
+#include "item.h"
 #include <algorithm>
 #include <list>
 
@@ -19,9 +20,11 @@ using namespace std;
 Player player(10, 10);
 list<Bullet> listBullet;
 list<Enemy> listEnemy;
+list<Item> listItem;
 extern int map_wall[20][20];
 extern int map_enemy[20][20];
 extern int map_bullet[20][20];
+extern int map_item[20][20];
 
 void reshape(int w, int h)
 {
@@ -56,6 +59,8 @@ void display()
 			if (map_wall[i][j])
 				drawWall(i, j);
 	for (list<Bullet>::iterator it = listBullet.begin(); it != listBullet.end(); it++)
+		(*it).draw();
+	for (list<Item>::iterator it = listItem.begin(); it != listItem.end(); it++)
 		(*it).draw();
 	player.draw();
 	
@@ -119,7 +124,17 @@ void timer(int value)
 		{
 			(*it).~Bullet();
 			listBullet.erase(it++);
-			
+		}
+		else
+			it++;
+	}
+	
+	for (list<Item>::iterator it = listItem.begin(); it != listItem.end();)
+	{
+		if ((*it).isCollision())
+		{
+			(*it).~Item();
+			listItem.erase(it++);
 		}
 		else
 			it++;
@@ -128,6 +143,13 @@ void timer(int value)
 	glutTimerFunc(1, timer, 1);
 }
 
+void itemInit()
+{
+	for (int i = 0; i < 20; i++)
+		for (int j = 0; j < 20; j++)
+			if (map_item[i][j] != 0)
+				listItem.push_back(Item(map_item[i][j], i, j));
+}
 void main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
@@ -139,6 +161,6 @@ void main(int argc, char **argv)
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 	glutTimerFunc(100, timer, 1);
-	
+	itemInit();
 	glutMainLoop();
 }
