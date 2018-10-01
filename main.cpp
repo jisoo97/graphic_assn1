@@ -2,6 +2,9 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include "player.h"
+#include <algorithm>
+
+using namespace std;
 
 // 문제...
 // 1. 정적인 물체는 모두 map으로 관리...? (item, wall) 포함
@@ -18,8 +21,10 @@ extern int map_bullet[20][20];
 void reshape(int w, int h)
 {
 	glViewport(0, 0, w, h);
+	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluOrtho2D(player.x * 50 - 250,player.x * 50 + 250, player.y * 50 - 200, player.y * 50 + 200);
+	glTranslatef(50, 0, 0);
 }
 
 void drawWall(int i, int j)
@@ -37,7 +42,9 @@ void display()
 		for (int j = 0; j < 20; j++)
 			if (map_wall[i][j])
 				drawWall(i, j);
+	
 	player.draw();
+	
 	glutSwapBuffers();
 }
 
