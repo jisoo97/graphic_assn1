@@ -24,7 +24,7 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT);
 	for (int i = 0; i < 20; i++)
 		for (int j = 0; j < 20; j++)
-			if (map_wall[i][j] == 0)
+			if (map_wall[i][j])
 				drawWall(i, j);
 
 	glutSwapBuffers();

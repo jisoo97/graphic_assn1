@@ -12,7 +12,7 @@ Bullet::~Bullet()
 }
 
 void Bullet::draw() {
-	glColor3f(0.0f, 0.0f, 1.0f);
+	/*glColor3f(0.0f, 0.0f, 1.0f);
 	double rad = 20;
 	glBegin(GL_POLYGON);
 	for (int i = 0; i<360; i++)
@@ -23,7 +23,7 @@ void Bullet::draw() {
 		glVertex2f(x + this->x, y + this->y);
 	}
 	glEnd();
-}
+*/}
 
 void Bullet::move() {
 	//0: up, 1:down, 2:left, 3:right
