@@ -2,7 +2,10 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include "player.h"
+#include "bullet.h"
+#include "enemy.h"
 #include <algorithm>
+#include <list>
 
 using namespace std;
 
@@ -14,6 +17,8 @@ using namespace std;
 
 using namespace std;
 Player player(10, 10);
+list<Bullet> listBullet;
+list<Enemy> listEnemy;
 extern int map_wall[20][20];
 extern int map_enemy[20][20];
 extern int map_bullet[20][20];
@@ -25,12 +30,20 @@ void reshape(int w, int h)
 	glLoadIdentity();
 	gluOrtho2D(player.x * 50 - 250,player.x * 50 + 250, player.y * 50 - 200, player.y * 50 + 200);
 	glTranslatef(50, 0, 0);
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
+	//gluLookAt(0, 0, 0.1, 0, 0, 0, 0, 1, 0);
+
 }
 
 void drawWall(int i, int j)
 {
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glTranslatef(i * 50, j * 50, 0);
 	glColor3f(191/255.0,144/255.0,0/255.0);
-	glRectf(i*50, j*50, (i+1)*50, (j+1)*50);
+	glRectf(0,0,50,50);
+	glPopMatrix();
 }
 
 void display()
@@ -42,10 +55,27 @@ void display()
 		for (int j = 0; j < 20; j++)
 			if (map_wall[i][j])
 				drawWall(i, j);
-	
+	for (list<Bullet>::iterator it = listBullet.begin(); it != listBullet.end(); it++)
+		(*it).draw();
 	player.draw();
 	
 	glutSwapBuffers();
+}
+
+void cameraMove()
+{
+	int left;
+	int right;
+	int bottom;
+	int top;
+	left = min(max(player.x * 50 - 250, 0), 500);
+	right = left + 500;
+	bottom = min(max(player.y * 50 - 200, 0), 600);
+	top = bottom + 400;
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	//glTranslatef(left, bottom, 0);
+	gluOrtho2D(left, right, bottom, top);
 }
 
 void special(int key, int x, int y)
@@ -64,7 +94,38 @@ void special(int key, int x, int y)
 		player.move(player.x+1, player.y);
 		break;
 	}
+	cameraMove();
 	glutPostRedisplay();
+}
+
+void keyboard(unsigned char key, int x, int y)
+{
+	switch (key)
+	{
+	case ' ':
+		listBullet.push_back(Bullet(player.direction, player.x, player.y));
+
+	}
+
+	glutPostRedisplay();
+}
+
+void timer(int value)
+{
+	for (list<Bullet>::iterator it = listBullet.begin(); it != listBullet.end();)
+	{
+		(*it).move();
+		if ((*it).isCollision())
+		{
+			(*it).~Bullet();
+			listBullet.erase(it++);
+			
+		}
+		else
+			it++;
+	}
+	glutPostRedisplay();
+	glutTimerFunc(1, timer, 1);
 }
 
 void main(int argc, char **argv)
@@ -73,9 +134,11 @@ void main(int argc, char **argv)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutInitWindowSize(500, 400);
 	glutCreateWindow("simple");
+	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(special);
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
+	glutTimerFunc(100, timer, 1);
 	
 	glutMainLoop();
 }
