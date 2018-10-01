@@ -35,7 +35,7 @@ void display()
 	
 	for (int i = 0; i < 20; i++)
 		for (int j = 0; j < 20; j++)
-			if (map_wall[i][j] == 1)
+			if (map_wall[i][j])
 				drawWall(i, j);
 	player.draw();
 	glutSwapBuffers();
