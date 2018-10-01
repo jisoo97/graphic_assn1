@@ -5,6 +5,7 @@
 
 extern int map_wall[20][20];
 extern int map_bullet[20][20];
+extern int map_enemy[20][20];
 extern Player player;
 
 Enemy::Enemy(int x, int y)
@@ -23,13 +24,22 @@ void Enemy::draw()
 
 void Enemy::move() 
 {
-	int dist_x, dist_y,partition;
-	dist_x = this->x - player.x;
-	dist_y = this->y - player.y;
-	if (isNearPlayer(dist_x, dist_y)) {
-		partition = getPlayerPartition(dist_x, dist_y);
-		getDirectionToMove();
+	int direction, prev_x, prev_y;
+	prev_x = this->x;
+	prev_y = this->y;
+	direction = getDirectionToMove();
+	switch(direction) {
+	case UP:
+		this->y = this->y + 1;
+	case DOWN: 
+		this->y = this->y - 1;
+	case LEFT:
+		this->x = this->x - 1;
+	case RIGHT:
+		this->x = this->x + 1;
 	}
+	map_enemy[prev_x][prev_y] = 0;
+	map_enemy[this->x][this->y] = 1;
 }
 
 bool Enemy::wallCollision(int x, int y)
@@ -77,64 +87,75 @@ int Enemy::getPlayerPartition(int dist_x, int dist_y)
 	}
 }
 
-int Enemy::getDirectionToMove(int partition)
+bool Enemy::isWallThere(int direction) {//check if there is wall in certain direction
+	int new_x = this->x;
+	int new_y = this->y;
+	switch (direction) {
+	case UP: new_y++; break;
+	case DOWN: new_y--; break;
+	case RIGHT: new_x++; break;
+	case LEFT: new_x--; break;
+	}
+	return wallCollision(new_x, new_y);
+}
+
+int Enemy::getDirectionToMove()//return Direction according to partition
 {
-	int direction;
-	//UP, DOWN, RIGHT, LEFT
-	switch (partition) {
-	case 1:
-		if
-	case 2:
-	case 3:
-	case 4:
-	case 5:
-		direction = UP;
-	case 6:
-		direction = LEFT;
-	case 7:
-		direction = DOWN;
-	case 8:
-		direction = RIGHT;
+	int dist_x, dist_y, partition, direction;
+	dist_x = this->x - player.x;
+	dist_y = this->y - player.y;
+	if (!isNearPlayer(dist_x, dist_y)) {//far from player
+		direction = getDirectionWithNoWall();
 	}
-	int direction;
-	
-	if (dist_y < 0) {//1,2
-		if (dist_x < 0) {//1 - UP, RIGHT
-			if (ran) direction = UP;
-			else direction = RIGHT;
+	else {//near player
+		partition = getPlayerPartition(dist_x, dist_y);
+		//UP, DOWN, RIGHT, LEFT
+		switch (partition) {
+		case 1://up, right
+			direction = UP;
+			if (isWallThere(direction))
+				direction = RIGHT;
+			break;
+		case 2://up, left
+			direction = LEFT;
+			if (isWallThere(direction))
+				direction = UP;
+			break;
+		case 3://down, left
+			direction = DOWN;
+			if (isWallThere(direction))
+				direction = LEFT;
+			break;
+		case 4://down, right
+			direction = RIGHT;
+			if (isWallThere(direction))
+				direction = DOWN;
+			break;
+		case 5:
+			direction = UP; break;
+		case 6:
+			direction = LEFT; break;
+		case 7:
+			direction = DOWN; break;
+		case 8:
+			direction = RIGHT; break;
 		}
-		else {//2 - UP, LEFT
-			if (ran) direction = UP;
-			else direction = LEFT;
-		}
-	}
-	else if (dist_y == 0) {//Go Left or Right
-		if (dist_x > 0) direction = LEFT;
-		else direction = RIGHT;
-	}
-	else{//3,4
-		if (dist_x > 0) {//3-DOWN, LEFT
-			if (ran) direction = DOWN;
-			else direction = LEFT;
-		}
-		else {//4-DOWN,RIGHT
-			if (ran) direction = DOWN;
-			else direction = RIGHT;
-		}
+		if (isWallThere(direction))
+			direction = getDirectionWithNoWall();
 	}
 }
 
 
-int Enemy::getDirectionWithNoWall(int partition)
+int Enemy::getDirectionWithNoWall() //Return direction with no Wall
 {
-	int diriection;
+	int direction;
 	int prev_x = this->x;
 	int prev_y = this->y;
 	do {
 		this->x = prev_x;
 		this->y = prev_y;
-		diriection = (int)(rand() * 4);
-		switch (diriection) {
+		direction = (int)(rand() * 4);
+		switch (direction) {
 		case UP:
 			this->y = this->y + 1; break;
 		case DOWN:
@@ -146,4 +167,5 @@ int Enemy::getDirectionWithNoWall(int partition)
 		default:
 		}
 	} while (!wallCollision(this->x, this->y));
+	return direction;
 }
