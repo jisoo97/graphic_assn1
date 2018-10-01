@@ -15,34 +15,40 @@ Player::Player(int x, int y) {
 }
 
 void Player::draw() {
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	
+	//glRotatef(45, 1, 0, 0);
+	glTranslatef(x*50, y*50, 0);
 	glColor3f(91/255.0, 155/255.0, 213/255.0);
-	glRectf(x * 50, y * 50, (x + 1) * 50, (y + 1) * 50);
+	glRectf(0,0,50,50);
+	glPopMatrix();
+	
+	//glRectf(x * 50, y * 50, (x + 1) * 50, (y + 1) * 50);
 }
 
 void Player::move(int x, int y)
 {
 
-	int left;
-	int right;
-	int bottom;
-	int top;
+	if (x == (this->x + 1))
+		this->direction = 3;
+	else if (x == (this->x - 1))
+		this->direction = 2;
+	else if (y == (this->y + 1))
+		this->direction = 0;
+	else
+		this->direction = 1;
 
 	if (!this->wallCollision(x, y))
 	{
 		this->x = x;
 		this->y = y;
 	}
-	
 
-	left = min(max(this->x * 50 - 250, 0), 500);
-	right = left + 500;
-	bottom = min(max(this->y * 50 - 200, 0), 600);
-	top = bottom + 400;
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluOrtho2D(left, right, bottom, top);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+
+	
+	
 }
 
 bool Player::wallCollision(int x, int y)

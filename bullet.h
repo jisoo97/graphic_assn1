@@ -2,7 +2,7 @@
 class Bullet
 {
 public:
-	Bullet();
+	Bullet(int direction, int x, int y);
 	void draw();
 	void move();
 	bool  wallCollision();
