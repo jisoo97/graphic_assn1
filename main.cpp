@@ -121,7 +121,7 @@ void timer(int value)
 	//those shall be merged into update func
 	for (list<Bullet>::iterator it = listBullet.begin(); it != listBullet.end();)//bullet management
 	{
-		cout << "in bullet iterator";
+		
 		(*it).move();
 		if ((*it).wallCollision())
 		{
@@ -134,7 +134,7 @@ void timer(int value)
 	
 	for (list<Item>::iterator it = listItem.begin(); it != listItem.end();)//item management
 	{
-		cout << "in item iterator";
+		
 		if ((*it).playerCollision())
 		{
 			(*it).~Item();
@@ -143,11 +143,8 @@ void timer(int value)
 		else
 			it++;
 	}
-
 	for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end();)//enemy management
 	{
-		cout << "in enemy iterator";
-		(*it).move();
 		if ((*it).bulletCollision())
 		{
 			(*it).~Enemy();
@@ -156,6 +153,7 @@ void timer(int value)
 		else
 			it++;
 	}
+	
 
 	if (player.enemyCollision())
 	{
@@ -163,8 +161,18 @@ void timer(int value)
 	}
 
 	glutPostRedisplay();
-	glutTimerFunc(1, timer, 1);
+	glutTimerFunc(10, timer, value + 1);
 }
+
+void timer2(int value)
+{
+	cout << "move" << endl;
+	for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end(); it++)//enemy management
+		(*it).move();
+	glutPostRedisplay();
+	glutTimerFunc(100, timer2, value + 1);
+}
+
 
 void itemInit()
 {
@@ -192,7 +200,8 @@ void main(int argc, char **argv)
 	glutSpecialFunc(special);
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
-	glutTimerFunc(100, timer, 1);
+	glutTimerFunc(10, timer, 1);
+	glutTimerFunc(50, timer2, 1);
 	itemInit();
 	enemyInit();
 	glutMainLoop();

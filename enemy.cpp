@@ -39,13 +39,13 @@ void Enemy::move()
 	direction = getDirectionToMove();
 	switch(direction) {
 	case UP:
-		this->y = this->y + 1;
+		this->y = this->y + 1; break;
 	case DOWN: 
-		this->y = this->y - 1;
+		this->y = this->y - 1; break;
 	case LEFT:
-		this->x = this->x - 1;
+		this->x = this->x - 1; break;
 	case RIGHT:
-		this->x = this->x + 1;
+		this->x = this->x + 1; break;
 	}
 	map_enemy[prev_x][prev_y] = 0;
 	map_enemy[this->x][this->y] = 1;
@@ -162,7 +162,6 @@ int Enemy::getDirectionWithNoWall() //Return direction with no Wall
 	int dir;
 	int prev_x = this->x;
 	int prev_y = this->y;
-		cout << "do while problem";
 		for ( dir = 0; dir < 4; dir++) {
 			this->x = prev_x;
 			this->y = prev_y;
