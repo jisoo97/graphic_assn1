@@ -24,6 +24,22 @@ void Bullet::draw() {
 	glPushMatrix();
 	glLoadIdentity();
 	glTranslatef(x, y, 0);
+
+	switch (this->direction)
+	{
+	case 0:
+		glRotatef(90, 0, 0, 1); 
+		break;
+	case 1:
+		glRotatef(-90, 0, 0, 1);
+		break;
+	case 2:
+		glRotatef(180, 0, 0, 1);
+		break;
+	default:
+		break;
+	}
+
 	glColor3f(0.0f, 0.0f, 1.0f);
 	double rad = 10;
 	glBegin(GL_POLYGON);
@@ -35,6 +51,7 @@ void Bullet::draw() {
 		glVertex2f(x, y);
 	}
 	glEnd();
+	glRectf(-30, -rad, 0, rad);
 	glPopMatrix();
 }
 

@@ -1,6 +1,7 @@
 #include "player.h"
 #include <GL/glut.h>
 #include <algorithm>
+#include <cmath>
 extern int map_wall[20][20];
 extern int map_enemy[20][20];
 extern int map_item[20][20];
@@ -21,8 +22,38 @@ void Player::draw() {
 	
 	//glRotatef(45, 1, 0, 0);
 	glTranslatef(x*50, y*50, 0);
+	
 	glColor3f(91/255.0, 155/255.0, 213/255.0);
-	glRectf(0,0,50,50);
+	double rad = 10;
+	glBegin(GL_POLYGON);
+	for (int i = 0; i<360; i++)
+	{
+		double angle = i * 3.141592 / 180;
+		double x = rad * cos(angle);
+		double y = rad * sin(angle);
+		glVertex2f(x + 25, y + 40);
+	}
+	glEnd();
+	glRectf(10, 25, 40, 30);
+	glRectf(22.5, 13, 27.5, 30);
+	glPopMatrix();
+
+	//left leg
+	glPushMatrix();
+	glLoadIdentity();
+	glTranslatef(x * 50, y * 50, 0);
+	glTranslatef(18, 0, 0);
+	glRotatef(60, 0, 0, 1);
+	glRectf(0, 0, 18, 5);
+	glPopMatrix();
+
+	//right leg
+	glPushMatrix();
+	glLoadIdentity();
+	glTranslatef(x * 50, y * 50, 0);
+	glTranslatef(32, 0, 0);
+	glRotatef(-60, 0, 0, 1);
+	glRectf(-18, 0, 0, 5);
 	glPopMatrix();
 	
 	//glRectf(x * 50, y * 50, (x + 1) * 50, (y + 1) * 50);

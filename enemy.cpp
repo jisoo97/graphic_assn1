@@ -3,6 +3,7 @@
 #include <cmath>
 #include <GL/glut.h>
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -26,8 +27,32 @@ void Enemy::draw()
 	glLoadIdentity();
 	glTranslatef(x * 50, y * 50, 0);
 	glColor3f(1.0, 0, 0);
-	glRectf(0,0,50,50);
+	glBegin(GL_POLYGON);
+	glVertex2f(0, 0);
+	glVertex2f(50, 0);
+	glVertex2f(25, 50*sin(60*3.14159/180));
+	glEnd();
+	//glRectf(0,0,50,50);
 	glPopMatrix();
+
+	glPushMatrix();
+	glLoadIdentity();
+	glTranslatef(x * 50, y * 50,0);
+	glTranslatef(27, 15, 0);
+	glColor3f(0, 0, 0);
+	glRotatef(30, 0, 0, 1);
+	glRectf(2, 0, 13, 3);
+	glPopMatrix();
+
+	glPushMatrix();
+	glLoadIdentity();
+	glTranslatef(x * 50, y * 50, 0);
+	glTranslatef(25, 15, 0);
+	glColor3f(0, 0, 0);
+	glRotatef(-30, 0, 0, 1);
+	glRectf(-13, 0, -2, 3);
+	glPopMatrix();
+
 }
 
 void Enemy::move() 
@@ -35,7 +60,6 @@ void Enemy::move()
 	int direction, prev_x, prev_y;
 	prev_x = this->x;
 	prev_y = this->y;
-	cout << "enemy move in";
 	direction = getDirectionToMove();
 	switch(direction) {
 	case UP:
@@ -78,20 +102,20 @@ int Enemy::getPlayerPartition(int dist_x, int dist_y)
 		}
 		else {//2 - UP, LEFT
 			partition = 2;
+			if (dist_x == 0) partition = 5;
 		}
 	}
-	else if (dist_y == 0) {//5,7
-		if (dist_x > 0) partition = 5;
-		else partition = 7;
+	else if (dist_y == 0) {//6,8
+		if (dist_x > 0) partition = 6;
+		else partition = 8;
 	}
 	else {//3,4
 		if (dist_x > 0) {//3-DOWN, LEFT
 			partition = 3;
-			if (dist_y == 0) partition = 6;
 		}
 		else {//4-DOWN,RIGHT
 			partition = 4;
-			if (dist_y == 0) partition = 8;
+			if (dist_x == 0) partition = 7;
 		}
 	}
 	return partition;
@@ -160,29 +184,7 @@ int Enemy::getDirectionToMove()//return Direction according to partition
 int Enemy::getDirectionWithNoWall() //Return direction with no Wall
 {
 	int dir;
-	int prev_x = this->x;
-	int prev_y = this->y;
 		for ( dir = 0; dir < 4; dir++) {
-			this->x = prev_x;
-			this->y = prev_y;
-			switch (dir) {
-			case UP: 
-			{
-				this->y = this->y + 1; break; 
-			}
-			case DOWN: 
-			{
-				this->y = this->y - 1; break;
-			}
-			case RIGHT:
-			{
-				this->x = this->x + 1; break; 
-			}
-			case LEFT: {
-				this->x = this->x - 1; break; 
-			}
-			default: {}
-			}
 			if (!isWallThere(dir)) break;
 		}
 	return dir;

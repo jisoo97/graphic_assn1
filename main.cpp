@@ -44,8 +44,17 @@ void drawWall(int i, int j)
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glTranslatef(i * 50, j * 50, 0);
-	glColor3f(191/255.0,144/255.0,0/255.0);
+	glColor3f(86 / 255.0, 52 / 255.0, 27 / 255.0);
 	glRectf(0,0,50,50);
+	glColor3f(151 / 255.0, 84 / 255.0, 23 / 255.0);
+	glRectf(0, 2, 16, 12.5);
+	glRectf(18, 2, 50, 12.5);
+	glRectf(0, 14.5, 32, 25);
+	glRectf(34, 14.5, 50, 25);
+	glRectf(0, 27, 16, 37.5);
+	glRectf(18, 27, 50, 37.5);
+	glRectf(0, 39.5, 32, 50);
+	glRectf(34, 39.5, 50, 50);
 	glPopMatrix();
 }
 
@@ -134,7 +143,6 @@ void timer(int value)
 	
 	for (list<Item>::iterator it = listItem.begin(); it != listItem.end();)//item management
 	{
-		
 		if ((*it).playerCollision())
 		{
 			(*it).~Item();
@@ -161,12 +169,11 @@ void timer(int value)
 	}
 
 	glutPostRedisplay();
-	glutTimerFunc(10, timer, value + 1);
+	glutTimerFunc(1, timer, value + 1);
 }
 
 void timer2(int value)
 {
-	cout << "move" << endl;
 	for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end(); it++)//enemy management
 		(*it).move();
 	glutPostRedisplay();
