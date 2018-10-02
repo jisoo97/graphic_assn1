@@ -30,7 +30,7 @@ void Item::draw() {//should be called only when status is 0
 	glPopMatrix();
 }
 
-bool Item::isCollision()
+bool Item::playerCollision()
 {
 	return (this->x == player.x) && (this->y == player.y);
 }

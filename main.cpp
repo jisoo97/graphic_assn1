@@ -62,6 +62,8 @@ void display()
 		(*it).draw();
 	for (list<Item>::iterator it = listItem.begin(); it != listItem.end(); it++)
 		(*it).draw();
+	for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end(); it++)
+		(*it).draw();
 	player.draw();
 	
 	glutSwapBuffers();
@@ -109,7 +111,6 @@ void keyboard(unsigned char key, int x, int y)
 	{
 	case ' ':
 		listBullet.push_back(Bullet(player.direction, player.x, player.y));
-
 	}
 
 	glutPostRedisplay();
@@ -117,10 +118,12 @@ void keyboard(unsigned char key, int x, int y)
 
 void timer(int value)
 {
-	for (list<Bullet>::iterator it = listBullet.begin(); it != listBullet.end();)
+	//those shall be merged into update func
+	for (list<Bullet>::iterator it = listBullet.begin(); it != listBullet.end();)//bullet management
 	{
+		cout << "in bullet iterator";
 		(*it).move();
-		if ((*it).isCollision())
+		if ((*it).wallCollision())
 		{
 			(*it).~Bullet();
 			listBullet.erase(it++);
@@ -129,9 +132,10 @@ void timer(int value)
 			it++;
 	}
 	
-	for (list<Item>::iterator it = listItem.begin(); it != listItem.end();)
+	for (list<Item>::iterator it = listItem.begin(); it != listItem.end();)//item management
 	{
-		if ((*it).isCollision())
+		cout << "in item iterator";
+		if ((*it).playerCollision())
 		{
 			(*it).~Item();
 			listItem.erase(it++);
@@ -139,6 +143,25 @@ void timer(int value)
 		else
 			it++;
 	}
+
+	for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end();)//enemy management
+	{
+		cout << "in enemy iterator";
+		(*it).move();
+		if ((*it).bulletCollision())
+		{
+			(*it).~Enemy();
+			listEnemy.erase(it++);
+		}
+		else
+			it++;
+	}
+
+	if (player.enemyCollision())
+	{
+		cout << "gameover" << endl;
+	}
+
 	glutPostRedisplay();
 	glutTimerFunc(1, timer, 1);
 }
@@ -150,6 +173,15 @@ void itemInit()
 			if (map_item[i][j] != 0)
 				listItem.push_back(Item(map_item[i][j], i, j));
 }
+
+void enemyInit()
+{
+	for (int i = 0; i < 20; i++)
+		for (int j = 0; j < 20; j++)
+			if (map_enemy[i][j] != 0)
+				listEnemy.push_back(Enemy(i, j));
+}
+
 void main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
@@ -162,5 +194,6 @@ void main(int argc, char **argv)
 	glutReshapeFunc(reshape);
 	glutTimerFunc(100, timer, 1);
 	itemInit();
+	enemyInit();
 	glutMainLoop();
 }

@@ -2,6 +2,9 @@
 #include "player.h"
 #include <cmath>
 #include <GL/glut.h>
+#include <iostream>
+
+using namespace std;
 
 extern int map_wall[20][20];
 extern int map_bullet[20][20];
@@ -18,8 +21,13 @@ Enemy::Enemy(int x, int y)
 
 void Enemy::draw()
 {
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glTranslatef(x * 50, y * 50, 0);
 	glColor3f(1.0, 0, 0);
-	glRectf(x * 50, y * 50, (x + 1) * 50, (y + 1) * 50);
+	glRectf(0,0,50,50);
+	glPopMatrix();
 }
 
 void Enemy::move() 
@@ -27,6 +35,7 @@ void Enemy::move()
 	int direction, prev_x, prev_y;
 	prev_x = this->x;
 	prev_y = this->y;
+	cout << "enemy move in";
 	direction = getDirectionToMove();
 	switch(direction) {
 	case UP:
@@ -85,6 +94,7 @@ int Enemy::getPlayerPartition(int dist_x, int dist_y)
 			if (dist_y == 0) partition = 8;
 		}
 	}
+	return partition;
 }
 
 bool Enemy::isWallThere(int direction) {//check if there is wall in certain direction
@@ -143,29 +153,38 @@ int Enemy::getDirectionToMove()//return Direction according to partition
 		if (isWallThere(direction))
 			direction = getDirectionWithNoWall();
 	}
+	return direction;
 }
 
 
 int Enemy::getDirectionWithNoWall() //Return direction with no Wall
 {
-	int direction;
+	int dir;
 	int prev_x = this->x;
 	int prev_y = this->y;
-	do {
-		this->x = prev_x;
-		this->y = prev_y;
-		direction = (int)(rand() * 4);
-		switch (direction) {
-		case UP:
-			this->y = this->y + 1; break;
-		case DOWN:
-			this->y = this->y - 1; break;
-		case RIGHT:
-			this->x = this->x + 1; break;
-		case LEFT:
-			this->x = this->x - 1; break;
-		default:
+		cout << "do while problem";
+		for ( dir = 0; dir < 4; dir++) {
+			this->x = prev_x;
+			this->y = prev_y;
+			switch (dir) {
+			case UP: 
+			{
+				this->y = this->y + 1; break; 
+			}
+			case DOWN: 
+			{
+				this->y = this->y - 1; break;
+			}
+			case RIGHT:
+			{
+				this->x = this->x + 1; break; 
+			}
+			case LEFT: {
+				this->x = this->x - 1; break; 
+			}
+			default: {}
+			}
+			if (!isWallThere(dir)) break;
 		}
-	} while (!wallCollision(this->x, this->y));
-	return direction;
+	return dir;
 }

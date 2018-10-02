@@ -56,9 +56,9 @@ bool Player::wallCollision(int x, int y)
 	return map_wall[x][y] == 1;
 }
 
-bool Player::enemyCollision(int x, int y)
+bool Player::enemyCollision()
 {
-	return map_enemy[x][y] == 1;
+	return map_enemy[player.x][player.y] == 1;
 }
 
 bool Player::itemCollision(int x, int y)
