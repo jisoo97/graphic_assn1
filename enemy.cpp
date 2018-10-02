@@ -39,13 +39,13 @@ void Enemy::move()
 	direction = getDirectionToMove();
 	switch(direction) {
 	case UP:
-		this->y = this->y + 1;
+		this->y = this->y + 1; break;
 	case DOWN: 
-		this->y = this->y - 1;
+		this->y = this->y - 1; break;
 	case LEFT:
-		this->x = this->x - 1;
+		this->x = this->x - 1; break;
 	case RIGHT:
-		this->x = this->x + 1;
+		this->x = this->x + 1; break;
 	}
 	map_enemy[prev_x][prev_y] = 0;
 	map_enemy[this->x][this->y] = 1;
@@ -78,20 +78,20 @@ int Enemy::getPlayerPartition(int dist_x, int dist_y)
 		}
 		else {//2 - UP, LEFT
 			partition = 2;
+			if (dist_x == 0) partition = 5;
 		}
 	}
-	else if (dist_y == 0) {//5,7
-		if (dist_x > 0) partition = 5;
-		else partition = 7;
+	else if (dist_y == 0) {//6,8
+		if (dist_x > 0) partition = 6;
+		else partition = 8;
 	}
 	else {//3,4
 		if (dist_x > 0) {//3-DOWN, LEFT
 			partition = 3;
-			if (dist_y == 0) partition = 6;
 		}
 		else {//4-DOWN,RIGHT
 			partition = 4;
-			if (dist_y == 0) partition = 8;
+			if (dist_x == 0) partition = 7;
 		}
 	}
 	return partition;
@@ -160,30 +160,7 @@ int Enemy::getDirectionToMove()//return Direction according to partition
 int Enemy::getDirectionWithNoWall() //Return direction with no Wall
 {
 	int dir;
-	int prev_x = this->x;
-	int prev_y = this->y;
-		cout << "do while problem";
 		for ( dir = 0; dir < 4; dir++) {
-			this->x = prev_x;
-			this->y = prev_y;
-			switch (dir) {
-			case UP: 
-			{
-				this->y = this->y + 1; break; 
-			}
-			case DOWN: 
-			{
-				this->y = this->y - 1; break;
-			}
-			case RIGHT:
-			{
-				this->x = this->x + 1; break; 
-			}
-			case LEFT: {
-				this->x = this->x - 1; break; 
-			}
-			default: {}
-			}
 			if (!isWallThere(dir)) break;
 		}
 	return dir;

@@ -134,7 +134,6 @@ void timer(int value)
 	
 	for (list<Item>::iterator it = listItem.begin(); it != listItem.end();)//item management
 	{
-		cout << "in item iterator";
 		if ((*it).playerCollision())
 		{
 			(*it).~Item();
