@@ -25,10 +25,11 @@ extern int map_wall[20][20];
 extern int map_enemy[20][20];
 extern int map_bullet[20][20];
 extern int map_item[20][20];
-
+int enemy_move = 0;
 void reshape(int w, int h)
 {
-	glViewport(0, 0, w, h);
+	
+	glViewport(0,0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluOrtho2D(player.x * 50 - 250,player.x * 50 + 250, player.y * 50 - 200, player.y * 50 + 200);
@@ -36,7 +37,7 @@ void reshape(int w, int h)
 	//glMatrixMode(GL_MODELVIEW);
 	//glLoadIdentity();
 	//gluLookAt(0, 0, 0.1, 0, 0, 0, 0, 1, 0);
-
+	
 }
 
 void drawWall(int i, int j)
@@ -130,7 +131,6 @@ void timer(int value)
 	//those shall be merged into update func
 	for (list<Bullet>::iterator it = listBullet.begin(); it != listBullet.end();)//bullet management
 	{
-		
 		(*it).move();
 		if ((*it).wallCollision())
 		{
@@ -162,12 +162,17 @@ void timer(int value)
 			it++;
 	}
 	
-
+	enemy_move++;
 	if (player.enemyCollision())
 	{
 		cout << "gameover" << endl;
 	}
-
+	//Enemy move
+	if (enemy_move==1000) {
+		for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end(); it++)//enemy management
+			(*it).move();
+		enemy_move = 0;
+	}
 	glutPostRedisplay();
 	glutTimerFunc(1, timer, value + 1);
 }
@@ -177,7 +182,7 @@ void timer2(int value)
 	for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end(); it++)//enemy management
 		(*it).move();
 	glutPostRedisplay();
-	glutTimerFunc(100, timer2, value + 1);
+	glutTimerFunc(1000, timer2, value + 1);
 }
 
 
@@ -208,7 +213,7 @@ void main(int argc, char **argv)
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 	glutTimerFunc(10, timer, 1);
-	glutTimerFunc(50, timer2, 1);
+	//glutTimerFunc(50, timer2, 1);
 	itemInit();
 	enemyInit();
 	glutMainLoop();

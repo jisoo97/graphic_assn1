@@ -184,8 +184,8 @@ int Enemy::getDirectionToMove()//return Direction according to partition
 int Enemy::getDirectionWithNoWall() //Return direction with no Wall
 {
 	int dir;
-		for ( dir = 0; dir < 4; dir++) {
-			if (!isWallThere(dir)) break;
-		}
+	do {
+		dir = rand() % 4;
+	} while (isWallThere(dir));
 	return dir;
 }
