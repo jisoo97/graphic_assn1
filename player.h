@@ -7,10 +7,9 @@ public:
 	int x;
 	int y;
 	int direction;
-	int *itemlist;
+	bool* itemlist;
 	void move(int x, int y);
 	bool wallCollision(int x, int y);
 	bool enemyCollision();
 	bool itemCollision(int x, int y);
-
 };

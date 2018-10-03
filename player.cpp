@@ -11,8 +11,10 @@ extern Player player;
 Player::Player(int x, int y) {
 	this->x = x;
 	this->y = y;
-	this->direction = 0;//0:up, 1:down, 2:left, 3:right
-	this->itemlist = (int *)malloc(2 * sizeof(int));//item inventory can hold 2 items
+	this->direction = -1;//0:up, 1:down, 2:left, 3:right
+	this->itemlist = (bool *)malloc(2 * sizeof(bool));//item inventory can hold 2 items
+	itemlist[0] = false;
+	itemlist[1] = false;
 }
 
 void Player::draw() {
@@ -75,11 +77,7 @@ void Player::move(int x, int y)
 	{
 		this->x = x;
 		this->y = y;
-	}
-
-
-	
-	
+	}	
 }
 
 bool Player::wallCollision(int x, int y)

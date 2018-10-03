@@ -62,7 +62,7 @@ void Bullet::move() {
 	int prev_y_fit = this->y / 50;
 	int x_fit, y_fit;
 
-	if (dir == 0) {//up
+	if (dir==0) {//up
 		this->y = this->y + 1;
 	}
 	else if(dir == 1) {//down

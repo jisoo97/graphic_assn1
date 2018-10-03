@@ -10,13 +10,14 @@
 
 using namespace std;
 
-// 문제...
-// 1. 정적인 물체는 모두 map으로 관리...? (item, wall) 포함
-// 2. enemy는 list로 관리??
-// 3. 스무스한 움직임을 구현?
-// 4. 몇초에 한번씩 enemy가 움직여야 하는지?
+//To do list
+/*
+1. enemy 다 잡으면 game over
+2. item legend
 
-using namespace std;
+3. map 바꾸기
+4. item 시간 제한?
+*/
 Player player(10, 10);
 list<Bullet> listBullet;
 list<Enemy> listEnemy;
@@ -26,6 +27,8 @@ extern int map_enemy[20][20];
 extern int map_bullet[20][20];
 extern int map_item[20][20];
 int enemy_move = 0;
+int bullet_speed = 4;
+
 void reshape(int w, int h)
 {
 	
@@ -117,12 +120,30 @@ void special(int key, int x, int y)
 
 void keyboard(unsigned char key, int x, int y)
 {
+	int bul_x = player.x;
+	int bul_y = player.y;
+	int dir = player.direction;
 	switch (key)
 	{
 	case ' ':
-		listBullet.push_back(Bullet(player.direction, player.x, player.y));
+			if (player.itemlist[0]) {//item 발사 3개
+				switch (dir) {
+				case UP:
+				case DOWN:
+					listBullet.push_back(Bullet(dir, bul_x -1, bul_y));
+					listBullet.push_back(Bullet(dir, bul_x+1, bul_y));
+					break;
+				case LEFT:
+				case RIGHT:
+					listBullet.push_back(Bullet(dir, bul_x, bul_y-1));
+					listBullet.push_back(Bullet(dir, bul_x, bul_y+1));
+					break;
+				}
+			}
+			if (player.itemlist[1])//speed up
+				bullet_speed = 2;
+		listBullet.push_back(Bullet(dir, bul_x, bul_y));
 	}
-
 	glutPostRedisplay();
 }
 
@@ -145,6 +166,8 @@ void timer(int value)
 	{
 		if ((*it).playerCollision())
 		{
+			int type = (*it).type;
+			player.itemlist[type-1] = true;
 			(*it).~Item();
 			listItem.erase(it++);
 		}
@@ -161,30 +184,20 @@ void timer(int value)
 		else
 			it++;
 	}
-	
-	enemy_move++;
-	if (player.enemyCollision())
-	{
-		cout << "gameover" << endl;
-	}
 	//Enemy move
-	if (enemy_move==1000) {
+	if (enemy_move == 500*bullet_speed) {
 		for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end(); it++)//enemy management
 			(*it).move();
 		enemy_move = 0;
 	}
+	enemy_move =enemy_move + bullet_speed;
+	if (player.enemyCollision())
+	{
+		cout << "gameover" << endl;
+	}
 	glutPostRedisplay();
-	glutTimerFunc(1, timer, value + 1);
+	glutTimerFunc(bullet_speed, timer, value + 1);
 }
-
-void timer2(int value)
-{
-	for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end(); it++)//enemy management
-		(*it).move();
-	glutPostRedisplay();
-	glutTimerFunc(1000, timer2, value + 1);
-}
-
 
 void itemInit()
 {
@@ -213,7 +226,6 @@ void main(int argc, char **argv)
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 	glutTimerFunc(10, timer, 1);
-	//glutTimerFunc(50, timer2, 1);
 	itemInit();
 	enemyInit();
 	glutMainLoop();
