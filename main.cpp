@@ -1,3 +1,9 @@
+/*
+   Computer graphics assignment 1
+
+   20150309 컴퓨터공학과 허지성
+   20150863 컴퓨터공학과 김지수  
+*/
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -9,23 +15,18 @@
 #include <list>
 
 using namespace std;
-
-//To do list
-/*
-1. enemy 다 잡으면 game over
-2. item legend
-
-3. map 바꾸기
-4. item 시간 제한?
-*/
 Player player(10, 10);
-list<Bullet> listBullet;
-list<Enemy> listEnemy;
-list<Item> listItem;
+list<Bullet> listBullet;//list for managing bullet objects.
+list<Enemy> listEnemy;//list for managing enemy objects
+list<Item> listItem;// list for managing item objects.
+
+//maps
 extern int map_wall[20][20];
 extern int map_enemy[20][20];
 extern int map_bullet[20][20];
 extern int map_item[20][20];
+
+
 int enemy_move = 0;
 int bullet_speed = 4;
 bool game_over = false;
@@ -33,21 +34,20 @@ int width = 500;
 int height = 400;
 bool once = true;
 
+// function called when the window size is changed
 void reshape(int w, int h)
 {
 	width = w;
 	height = h;
-	glViewport(0, 0, w, h);
+	glViewport(0, 0, w, h);// modifying viewport as window size changes
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity(); 
-	gluOrtho2D(player.x * 50 - 250, player.x * 50 + 250, player.y * 50 - 200, player.y * 50 + 200);
-	glTranslatef(50, 0, 0);
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
-	//gluLookAt(0, 0, 0.1, 0, 0, 0, 0, 1, 0);
-
+	gluOrtho2D(player.x * 50 - 250, player.x * 50 + 250, player.y * 50 - 200, player.y * 50 + 200);// to make a player always be in the middle of the window
+	glTranslatef(50, 0, 0); 
 }
 
+// function for printing text
+// reference : http://programmingexamples.net/wiki/OpenGL/Text 
 void printtext(int x, int y, string String)
 {
 	glMatrixMode(GL_PROJECTION);
@@ -71,6 +71,7 @@ void printtext(int x, int y, string String)
 	glPopMatrix();
 }
 
+// function for drawing a wall cell
 void drawWall(int i, int j)
 {
 	glMatrixMode(GL_MODELVIEW);
@@ -90,6 +91,7 @@ void drawWall(int i, int j)
 	glPopMatrix();
 }
 
+// function that draws a status bar below the screen
 void drawStatusBar()
 {
 	glViewport(0, 0, width, height / 5);
@@ -102,18 +104,21 @@ void drawStatusBar()
 
 
 	glColor3f(0, 0, 0);
-	printtext(250, 250, "item list");
-	if (player.itemlist[0])
-		printtext(250, 150, "item1");
+	printtext(210, 250, "item list");
+	if (player.itemlist[0]) // when player got an item1
+		printtext(210, 150, "three bullets");
 
-	if (player.itemlist[1])
-		printtext(250, 100, "item2");
+	if (player.itemlist[1]) // when the player got item2
+		printtext(210, 100, "speed up bullets");
 
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 }
+
+// function to make screen follow the player.
+// the screen is restricted to the boundaries of the map.
 void cameraMove()
 {
 	int left;
@@ -130,11 +135,12 @@ void cameraMove()
 	gluOrtho2D(left, right, bottom, top);
 }
 
+
 void display()
 {
 
-	if (!game_over) {
-		glViewport(0, height / 5, width, height * 4 / 5);
+	if (!game_over) { // if game is not over.
+		glViewport(0, height / 5, width, height * 4 / 5); // upper part of the viewport
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		cameraMove();
@@ -144,32 +150,33 @@ void display()
 		glClearColor(1.0, 1.0, 1.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < 20; i++) // draw walls
 			for (int j = 0; j < 20; j++)
 				if (map_wall[i][j])
 					drawWall(i, j);
-		for (list<Bullet>::iterator it = listBullet.begin(); it != listBullet.end(); it++)
+		for (list<Bullet>::iterator it = listBullet.begin(); it != listBullet.end(); it++) // draw bullets
 			(*it).draw();
-		for (list<Item>::iterator it = listItem.begin(); it != listItem.end(); it++)
+		for (list<Item>::iterator it = listItem.begin(); it != listItem.end(); it++)// draw items
 			(*it).draw();
-		for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end(); it++)
+		for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end(); it++) //draw enemies
 			(*it).draw();
-		player.draw();
+		player.draw(); // draw player
 		drawStatusBar();
 		glutSwapBuffers();
 		
 	}
+	// if the game is over(all enemies are defeated or player touched an enemy)
 	else {
 		if (once) {
 			glViewport(0, 0, width, height);
-			printtext(110, 180, "Gameover"); once = false;
+			printtext(140, 180, "Gameover"); once = false;
 			glutSwapBuffers();
 		}
 	}//drawStatusBar();
 	//glutSwapBuffers();
 }
 
-
+// function that describes the effects of pushing arrow keys.
 void special(int key, int x, int y)
 {
 	switch (key) {
@@ -190,6 +197,7 @@ void special(int key, int x, int y)
 	glutPostRedisplay();
 }
 
+// function called when bullet is fired. (space bar)
 void keyboard(unsigned char key, int x, int y)
 {
 	int bul_x = player.x;
@@ -197,8 +205,9 @@ void keyboard(unsigned char key, int x, int y)
 	int dir = player.direction;
 	switch (key)
 	{
-	case ' ':
-		if (player.itemlist[0]) {//item 발사 3개
+	case ' ':// space bar has been pushed.
+		// item1: 3 bullets are fired simultaneously.
+		if (player.itemlist[0]) {
 			
 			switch (dir) {
 			case UP:
@@ -213,20 +222,21 @@ void keyboard(unsigned char key, int x, int y)
 				break;
 			}
 		}
-		if (player.itemlist[1])//speed up
+		// item2: speed up bullets.
+		if (player.itemlist[1])
 			bullet_speed = 2;
 		listBullet.push_back(Bullet(dir, bul_x, bul_y));
 	}
 	glutPostRedisplay();
 }
 
+// timer function for updating the status of objects.
 void timer(int value)
 {
-	//those shall be merged into update func
 	for (list<Bullet>::iterator it = listBullet.begin(); it != listBullet.end();)//bullet management
 	{
 		(*it).move();
-		if ((*it).wallCollision())
+		if ((*it).wallCollision())// when a bullet reached to wall, it disappears.
 		{
 			(*it).~Bullet();
 			listBullet.erase(it++);
@@ -237,7 +247,7 @@ void timer(int value)
 
 	for (list<Item>::iterator it = listItem.begin(); it != listItem.end();)//item management
 	{
-		if ((*it).playerCollision())
+		if ((*it).playerCollision()) // player got an item
 		{
 			int type = (*it).type;
 			player.itemlist[type - 1] = true;
@@ -249,7 +259,7 @@ void timer(int value)
 	}
 	for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end();)//enemy management
 	{
-		if ((*it).bulletCollision())
+		if ((*it).bulletCollision()) // when an enemy got fired, it disappears.
 		{
 			(*it).~Enemy();
 			listEnemy.erase(it++);
@@ -257,39 +267,34 @@ void timer(int value)
 		else
 			it++;
 	}
-	//Enemy move
+	//Enemy moves periodically. (enemy move is a kind of timer)
 	if (enemy_move == 500 * bullet_speed) {
 		for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end(); it++)//enemy management
 			(*it).move();
 		enemy_move = 0;
 	}
-	enemy_move = enemy_move + bullet_speed;
+	enemy_move = enemy_move + bullet_speed;// enemy move timer update
 
 	//Game over check
 	if (player.enemyCollision() || listEnemy.empty())
-	{
 		game_over = true;
-		cout << "game over" << endl;
-	}
 	glutPostRedisplay();
 	glutTimerFunc(bullet_speed, timer, value + 1);
 }
 
-void itemInit()
+// function that reads map_item and creates the objects.
+void init()
 {
 	for (int i = 0; i < 20; i++)
 		for (int j = 0; j < 20; j++)
-			if (map_item[i][j] != 0)
+		{
+			if (map_item[i][j] != 0) // creates item objects
 				listItem.push_back(Item(map_item[i][j], i, j));
+			if (map_enemy[i][j] != 0) // creates enemy objects
+				listEnemy.push_back(Enemy(i, j));
+		}
 }
 
-void enemyInit()
-{
-	for (int i = 0; i < 20; i++)
-		for (int j = 0; j < 20; j++)
-			if (map_enemy[i][j] != 0)
-				listEnemy.push_back(Enemy(i, j));
-}
 
 void main(int argc, char **argv)
 {
@@ -302,7 +307,6 @@ void main(int argc, char **argv)
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 	glutTimerFunc(10, timer, 1);
-	itemInit();
-	enemyInit();
+	init();
 	glutMainLoop();
 }
