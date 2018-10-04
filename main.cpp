@@ -28,6 +28,7 @@ extern int map_bullet[20][20];
 extern int map_item[20][20];
 int enemy_move = 0;
 int bullet_speed = 4;
+bool game_over = false;
 
 void reshape(int w, int h)
 {
@@ -41,6 +42,29 @@ void reshape(int w, int h)
 	//glLoadIdentity();
 	//gluLookAt(0, 0, 0.1, 0, 0, 0, 0, 1, 0);
 	
+}
+
+void printtext(int x, int y, string String)
+{
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0, 300, 0, 300);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	//glPushAttrib(GL_DEPTH_TEST);
+	//glDisable(GL_DEPTH_TEST);
+	glRasterPos2i(x, y);
+	for (int i = 0; i<String.size(); i++)
+	{
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, String[i]);
+	}
+	//glPopAttrib();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
 }
 
 void drawWall(int i, int j)
@@ -64,21 +88,24 @@ void drawWall(int i, int j)
 
 void display()
 {
-	glClearColor(1.0, 1.0, 1.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-	
-	for (int i = 0; i < 20; i++)
-		for (int j = 0; j < 20; j++)
-			if (map_wall[i][j])
-				drawWall(i, j);
-	for (list<Bullet>::iterator it = listBullet.begin(); it != listBullet.end(); it++)
-		(*it).draw();
-	for (list<Item>::iterator it = listItem.begin(); it != listItem.end(); it++)
-		(*it).draw();
-	for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end(); it++)
-		(*it).draw();
-	player.draw();
-	
+	if (!game_over) {
+		glClearColor(1.0, 1.0, 1.0, 1.0);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		for (int i = 0; i < 20; i++)
+			for (int j = 0; j < 20; j++)
+				if (map_wall[i][j])
+					drawWall(i, j);
+		for (list<Bullet>::iterator it = listBullet.begin(); it != listBullet.end(); it++)
+			(*it).draw();
+		for (list<Item>::iterator it = listItem.begin(); it != listItem.end(); it++)
+			(*it).draw();
+		for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end(); it++)
+			(*it).draw();
+		player.draw();
+	}
+	else
+			printtext(110, 180, "Gameover");
 	glutSwapBuffers();
 }
 
@@ -191,9 +218,11 @@ void timer(int value)
 		enemy_move = 0;
 	}
 	enemy_move =enemy_move + bullet_speed;
-	if (player.enemyCollision())
+	
+	//Game over check
+	if (player.enemyCollision() || listEnemy.empty())
 	{
-		cout << "gameover" << endl;
+		game_over = true;
 	}
 	glutPostRedisplay();
 	glutTimerFunc(bullet_speed, timer, value + 1);
