@@ -12,4 +12,5 @@ public:
 	bool wallCollision(int x, int y);
 	bool enemyCollision();
 	bool itemCollision(int x, int y);
+
 };

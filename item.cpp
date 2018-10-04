@@ -2,6 +2,7 @@
 #include <GL/glut.h>
 #include "player.h"
 #include <cmath>
+
 #define PI 3.14159
 extern Player player;
 

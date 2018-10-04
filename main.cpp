@@ -27,24 +27,28 @@ extern int map_enemy[20][20];
 extern int map_bullet[20][20];
 extern int map_item[20][20];
 int enemy_move = 0;
-int bullet_speed = 4;
+int bullet_speed = 6;
 
+int width=500;
+int height=400;
 void reshape(int w, int h)
 {
-	
-	glViewport(0,0, w, h);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluOrtho2D(player.x * 50 - 250,player.x * 50 + 250, player.y * 50 - 200, player.y * 50 + 200);
-	glTranslatef(50, 0, 0);
+	width = w;
+	height = h;
+	//glViewport(0,0,w,h*2/3);
+	//glMatrixMode(GL_PROJECTION);
+	//glLoadIdentity();
+	//gluOrtho2D(player.x * 50 - 250,player.x * 50 + 250, player.y * 50 - 200, player.y * 50 + 200);
 	//glMatrixMode(GL_MODELVIEW);
 	//glLoadIdentity();
 	//gluLookAt(0, 0, 0.1, 0, 0, 0, 0, 1, 0);
+	
 	
 }
 
 void drawWall(int i, int j)
 {
+
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glTranslatef(i * 50, j * 50, 0);
@@ -61,27 +65,6 @@ void drawWall(int i, int j)
 	glRectf(34, 39.5, 50, 50);
 	glPopMatrix();
 }
-
-void display()
-{
-	glClearColor(1.0, 1.0, 1.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-	
-	for (int i = 0; i < 20; i++)
-		for (int j = 0; j < 20; j++)
-			if (map_wall[i][j])
-				drawWall(i, j);
-	for (list<Bullet>::iterator it = listBullet.begin(); it != listBullet.end(); it++)
-		(*it).draw();
-	for (list<Item>::iterator it = listItem.begin(); it != listItem.end(); it++)
-		(*it).draw();
-	for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end(); it++)
-		(*it).draw();
-	player.draw();
-	
-	glutSwapBuffers();
-}
-
 void cameraMove()
 {
 	int left;
@@ -97,6 +80,49 @@ void cameraMove()
 	//glTranslatef(left, bottom, 0);
 	gluOrtho2D(left, right, bottom, top);
 }
+void drawStatusBar()
+{
+	glViewport(0, 0, width, height / 5);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(0, 500, 0, 100);
+	glColor3f(0.3, 0.3, 0.3);
+	glRectf(0, 0, 500, 100);
+	if(player.itemlist[0])
+		
+}
+void display()
+{
+	glViewport(0, height/5,width, height*4/5);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	cameraMove();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glClearColor(1.0, 1.0, 1.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	
+	for (int i = 0; i < 20; i++)
+		for (int j = 0; j < 20; j++)
+			if (map_wall[i][j])
+				drawWall(i, j);
+	for (list<Bullet>::iterator it = listBullet.begin(); it != listBullet.end(); it++)
+		(*it).draw();
+	for (list<Item>::iterator it = listItem.begin(); it != listItem.end(); it++)
+		(*it).draw();
+	for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end(); it++)
+		(*it).draw();
+	player.draw();
+	
+	
+	drawStatusBar();
+	
+	
+
+	glutSwapBuffers();
+}
+
+
 
 void special(int key, int x, int y)
 {
@@ -114,7 +140,7 @@ void special(int key, int x, int y)
 		player.move(player.x+1, player.y);
 		break;
 	}
-	cameraMove();
+	
 	glutPostRedisplay();
 }
 
@@ -185,7 +211,7 @@ void timer(int value)
 			it++;
 	}
 	//Enemy move
-	if (enemy_move == 500*bullet_speed) {
+	if (enemy_move == 300*bullet_speed) {
 		for (list<Enemy>::iterator it = listEnemy.begin(); it != listEnemy.end(); it++)//enemy management
 			(*it).move();
 		enemy_move = 0;
@@ -219,7 +245,7 @@ void main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-	glutInitWindowSize(500, 400);
+	glutInitWindowSize(500, 500);
 	glutCreateWindow("simple");
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(special);

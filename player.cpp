@@ -2,6 +2,7 @@
 #include <GL/glut.h>
 #include <algorithm>
 #include <cmath>
+#define PI 3.141592
 extern int map_wall[20][20];
 extern int map_enemy[20][20];
 extern int map_item[20][20];
