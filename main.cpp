@@ -35,10 +35,11 @@ bool once = true;
 
 void reshape(int w, int h)
 {
-
+	width = w;
+	height = h;
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+	glLoadIdentity(); 
 	gluOrtho2D(player.x * 50 - 250, player.x * 50 + 250, player.y * 50 - 200, player.y * 50 + 200);
 	glTranslatef(50, 0, 0);
 	//glMatrixMode(GL_MODELVIEW);
@@ -49,7 +50,6 @@ void reshape(int w, int h)
 
 void printtext(int x, int y, string String)
 {
-	
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
@@ -99,9 +99,20 @@ void drawStatusBar()
 	gluOrtho2D(0, 500, 0, 100);
 	glColor3f(0.3, 0.3, 0.3);
 	glRectf(0, 0, 500, 100);
+
+
+	glColor3f(0, 0, 0);
+	printtext(250, 250, "item list");
+	if (player.itemlist[0])
+		printtext(250, 150, "item1");
+
+	if (player.itemlist[1])
+		printtext(250, 100, "item2");
+
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
 }
 void cameraMove()
 {
@@ -188,6 +199,7 @@ void keyboard(unsigned char key, int x, int y)
 	{
 	case ' ':
 		if (player.itemlist[0]) {//item ¹ß»ç 3°³
+			
 			switch (dir) {
 			case UP:
 			case DOWN:
@@ -283,7 +295,7 @@ void main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-	glutInitWindowSize(500, 400);
+	glutInitWindowSize(500, 500);
 	glutCreateWindow("simple");
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(special);
