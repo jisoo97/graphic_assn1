@@ -22,10 +22,9 @@ void Player::draw() {
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
-	
-	//glRotatef(45, 1, 0, 0);
 	glTranslatef(x*50, y*50, 0);
 	
+	//head
 	glColor3f(91/255.0, 155/255.0, 213/255.0);
 	double rad = 10;
 	glBegin(GL_POLYGON);
@@ -37,7 +36,11 @@ void Player::draw() {
 		glVertex2f(x + 25, y + 40);
 	}
 	glEnd();
+
+	//arms
 	glRectf(10, 25, 40, 30);
+
+	//body
 	glRectf(22.5, 13, 27.5, 30);
 	glPopMatrix();
 
@@ -58,23 +61,21 @@ void Player::draw() {
 	glRotatef(-60, 0, 0, 1);
 	glRectf(-18, 0, 0, 5);
 	glPopMatrix();
-	
-	//glRectf(x * 50, y * 50, (x + 1) * 50, (y + 1) * 50);
 }
 
 void Player::move(int x, int y)
 {
 
 	if (x == (this->x + 1))
-		this->direction = 3;
+		this->direction = 3; //RIGHT
 	else if (x == (this->x - 1))
-		this->direction = 2;
+		this->direction = 2; //LEFT
 	else if (y == (this->y + 1))
-		this->direction = 0;
+		this->direction = 0; //UP
 	else
-		this->direction = 1;
+		this->direction = 1; //DOWN
 
-	if (!this->wallCollision(x, y))
+	if (!wallCollision(x,y))
 	{
 		this->x = x;
 		this->y = y;

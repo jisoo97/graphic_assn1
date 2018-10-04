@@ -10,8 +10,6 @@ Bullet::Bullet(int direction, int x, int y)
 	this->direction = direction;
 	this->x = x*50+25;//a bullet is on 1000x1000 display
 	this->y = y*50+25;
-
-	destroy = false;
 }
 
 
@@ -20,26 +18,14 @@ Bullet::~Bullet()
 }
 
 void Bullet::draw() {
+	//bullet roation
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
 	glTranslatef(x, y, 0);
-
-	switch (this->direction)
-	{
-	case 0:
-		glRotatef(90, 0, 0, 1); 
-		break;
-	case 1:
-		glRotatef(-90, 0, 0, 1);
-		break;
-	case 2:
-		glRotatef(180, 0, 0, 1);
-		break;
-	default:
-		break;
-	}
-
+	rotation();
+	
+	//draw
 	glColor3f(0.0f, 0.0f, 1.0f);
 	double rad = 10;
 	glBegin(GL_POLYGON);
@@ -53,6 +39,23 @@ void Bullet::draw() {
 	glEnd();
 	glRectf(-30, -rad, 0, rad);
 	glPopMatrix();
+}
+
+void Bullet::rotation() {
+	switch (this->direction)
+	{
+	case 0: //UP
+		glRotatef(90, 0, 0, 1);
+		break;
+	case 1://DOWN
+		glRotatef(-90, 0, 0, 1);
+		break;
+	case 2: //LEFT
+		glRotatef(180, 0, 0, 1);
+		break;
+	default: //RIGHT
+		break;
+	}
 }
 
 void Bullet::move() {
@@ -89,7 +92,6 @@ bool Bullet::wallCollision() {
 	int y_fit = this->y / 50;
 	if (map_wall[x_fit][y_fit]) {//collision
 		map_bullet[x_fit][y_fit] = 0;
-		this->destroy = true;
 		return true;
 	}
 	return false;

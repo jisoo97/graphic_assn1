@@ -17,8 +17,7 @@ Item::~Item()
 {
 }
 
-void Item::draw() {//should be called only when status is 0
-
+void Item::draw() {
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
@@ -38,14 +37,11 @@ void Item::draw() {//should be called only when status is 0
 	
 	for (int i = 0; i < 5; i++)
 	{
-		
 		glVertex2f(rad_inner*cos((i-0.5) * 2 * PI / 5), rad_inner*sin((i-0.5) * 2 * PI / 5));
 		glVertex2f(rad_outer*cos(i * 2 * PI / 5), rad_outer*sin(i * 2 * PI / 5));
 	}
 	glEnd();
 	glPopMatrix();
-
-
 }
 
 bool Item::playerCollision()

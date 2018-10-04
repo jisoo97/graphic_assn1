@@ -17,11 +17,11 @@ Enemy::Enemy(int x, int y)
 	this->x = x;
 	this->y = y;
 	this->direction = 0;
-	this->nearPlayer = false;
 }
 
 void Enemy::draw()
 {
+	//triangle
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
@@ -32,9 +32,9 @@ void Enemy::draw()
 	glVertex2f(50, 0);
 	glVertex2f(25, 50*sin(60*3.14159/180));
 	glEnd();
-	//glRectf(0,0,50,50);
 	glPopMatrix();
 
+	//RIGHT eyebrow
 	glPushMatrix();
 	glLoadIdentity();
 	glTranslatef(x * 50, y * 50,0);
@@ -44,6 +44,7 @@ void Enemy::draw()
 	glRectf(2, 0, 13, 3);
 	glPopMatrix();
 
+	//LEFT eyebrow
 	glPushMatrix();
 	glLoadIdentity();
 	glTranslatef(x * 50, y * 50, 0);
@@ -52,7 +53,6 @@ void Enemy::draw()
 	glRotatef(-30, 0, 0, 1);
 	glRectf(-13, 0, -2, 3);
 	glPopMatrix();
-
 }
 
 void Enemy::move() 
@@ -87,7 +87,7 @@ bool Enemy::bulletCollision()
 
 bool Enemy::isNearPlayer(int dist_x, int dist_y)
 {
-	if (abs(dist_x) <= 2 && abs(dist_y) <= 2) {//in close region
+	if (abs(dist_x) <= 3 && abs(dist_y) <= 3) {//in close region
 		return true;
 	}
 	return false;
@@ -174,6 +174,7 @@ int Enemy::getDirectionToMove()//return Direction according to partition
 		case 8:
 			direction = RIGHT; break;
 		}
+		//if there are walls everywhere
 		if (isWallThere(direction))
 			direction = getDirectionWithNoWall();
 	}
